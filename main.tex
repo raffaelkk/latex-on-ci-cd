@@ -1,141 +1,88 @@
-\documentclass[11pt]{article}
-\usepackage{paper_style}
+\def\jobname{main} % or whatever your main document .tex file is named!
+\documentclass[a4paper]{article}
 
-\usepackage{lipsum}  %% Package to create dummy text (comment or erase before start)
+\title{Using PSTricks with pdflatex on Overleaf}
+\author{Overleaf}
 
-%% ===============================================
-%% Setting the line spacing (3 options: only pick one)
-% \doublespacing
-% \singlespacing
-\onehalfspacing
-%% ===============================================
+\usepackage{pst-node}
+\usepackage{pst-coil}
+\usepackage{auto-pst-pdf}
 
-\setlength{\droptitle}{-5em} %% Don't touch
+\usepackage{graphicx}
+\usepackage{hyperref}
+\pagestyle{empty}
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% SET THE TITLE
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% 
+%% These lines are required ≥TL2021 due to 
+%% incompatibility between hyperref and preview
+%% (See https://www.reddit.com/r/LaTeX/comments/jhi7nk/with_pdflatex_hyperref_breaks_autopstpdf/ and 
+%% https://lists.gnu.org/archive/html/bug-auctex/2020-11/msg00000.html  
+\makeatletter
+\ifPreview
+  \let\Hy@FirstPageHook\relax
+  \let\Hy@EveryPageAnchor\relax
+\fi
+\makeatother
+%%%%%
 
-% TITLE:
-\title{This is the Title: I hope you like it
-\thanks{Selected Paper prepared for presentation at the 201X Agricultural \& Applied Economics Association Annual Meeting}
-}
-
-% AUTHORS:
-\author{First Author\\% Name author
-    \href{mailto:firstauthor@ufl.edu}{\texttt{firstauthor@ufl.edu}} %% Email author 1
-\and Second Author\\% Name author
-    \href{mailto:secondauthor@ufl.edu}{\texttt{secondauthor@ufl.edu}} %% Email author 2
-\and Third Author\\% Name author
-    \href{mailto:thirdauthor@ufl.edu}{\texttt{thirdauthor@ufl.edu}}%% Email author 3
-%\and Forth Author\\% Name author
-%    \href{mailto:forthuthor@ufl.edu}{\texttt{forthuthor@ufl.edu}}%% Email author 4
-    }
-
-% DATE:
-\date{\today}
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ABSTRACT
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-{\setstretch{.8}
 \maketitle
-% %%%%%%%%%%%%%%%%%%
-\begin{abstract}
-% CONTENT OF ABS HERE--------------------------------------
 
-\lipsum[1] %% Dummy text for abstract. Erase before use.
+\begin{description}
+\item[Solution 1 (Recommended):] Compile with XeLaTeX. You can switch to XeLaTeX from the Overlef project: see \href{https://www.overleaf.com/learn/how-to/Changing_compiler}{this help page} too.
 
-% END CONTENT ABS------------------------------------------
-\noindent
-\textit{\textbf{Keywords: }%
-key1; key2; key3; key4.} \\ %% <-- Keywords HERE!
-\noindent
-\textit{\textbf{JEL Classification: }%
-Q12; C22; D81.} %% <-- JEL code HERE!
+\item[Solution 2:] Use the \texttt{auto-pst-pdf} package \textbf{together with} a custom \texttt{latexmkrc} file that contains this line:
 
-\end{abstract}
-}
+\begin{verbatim}
+$hash_calc_ignore_pattern{'pdf'} = '^/(CreationDate|ModDate|ID) ';
+\end{verbatim}
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BODY OF THE DOCUMENT
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+You will also need to add this line before your \verb|\documentclass|:
 
-\input{sections/introduction.tex}
+\begin{verbatim}
+\def\jobname{main} % or whatever your main document .tex file is named!
+\end{verbatim}
 
-\input{sections/methodology.tex}
+\end{description}
 
-\input{sections/discs_conc.tex}
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% REFERENCES SECTION
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\psset{dotscale=5}
+\begin{pspicture}[showgrid=true](0,0.55)(4,3.49)
+\psdots[dotstyle=diamond](1,3)(2,3)(3,3) \psdots[dotstyle=diamond*](1,2)(2,2)(3,2)
+\psdots[dotstyle=Bdiamond](1,1)(2,1)(3,1)
+\end{pspicture} \qquad
+\newpsfontdot {diamond} [1.9 0.4 0.9 1.9 -0.4598 -0.70775]{Symbol}{<E0>}
+\newpsfontdot {diamond*}[2.3 -0.6 0.8 2.3 -0.8533 -0.5336]{Symbol}{<A8>}
+\newpsfontdotH{Bdiamond}[2.0 0.2 -0.5 -0.75 0.1 0.1 ]{PSTricksDotFont}{(D)}{(l)}
+\begin{pspicture}[showgrid=true](0,0.55)(4,3.49)
+\psdots[dotstyle=diamond](1,3)(2,3)(3,3) \psdots[dotstyle=diamond*](1,2)(2,2)(3,2)
+\psdots[dotstyle=Bdiamond](1,1)(2,1)(3,1)
+\end{pspicture}
 \medskip
-
-\bibliography{references.bib}
-
-\newpage
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TABLES
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{table}[H]
-  \centering
-  \caption{Example table of descriptive statistics of the main variables.}
-  \label{tab:1}
-  \scalebox{.8}{
-    \begin{tabular}{rlrrrrrr}
-    \hline
-    \multicolumn{1}{c}{\textbf{Variables}} & \multicolumn{1}{c}{\textbf{Categories}} & \multicolumn{1}{c}{\textbf{Unit}} & \multicolumn{1}{c}{\textbf{Rep}} & \multicolumn{1}{c}{\textbf{Mean}} & \multicolumn{1}{c}{\textbf{St. Dev.}} & \multicolumn{1}{c}{\textbf{Min}} & \multicolumn{1}{c}{\textbf{Max}} \\ \hline \hline
-
-    \multicolumn{1}{l}{Variable 1} & Category A & \multicolumn{1}{c}{\$} & \multicolumn{1}{c}{8} & 0     & 0     & 0     & 0 \\
-          & Category B & \multicolumn{1}{c}{lb} & \multicolumn{1}{c}{8} & 22,411.20 & 6,325.90 & 13,819 & 31,201 \\
-          & Category C & \multicolumn{1}{c}{\$} & \multicolumn{1}{c}{8} & 5,869.60 & 4,609.90 & -464.1 & 12,744.10 \\
-    \multicolumn{1}{l}{Variable 2} & Category A & \multicolumn{1}{c}{\$} & \multicolumn{1}{c}{8} & 1,777.40 & 144.5 & 1,642.30 & 1,912.60 \\
-          & Category B & \multicolumn{1}{c}{lb} & \multicolumn{1}{c}{8} & 21,444.80 & 5,146.90 & 15,096 & 28,032 \\
-          & Category C & \multicolumn{1}{c}{\$} & \multicolumn{1}{c}{8} & 4,138.50 & 2,644.10 & 22.2  & 7,932.70 \\
-    \multicolumn{1}{l}{Variable 3} & Category A & \multicolumn{1}{c}{\$} & \multicolumn{1}{c}{8} & 2,346.80 & 190.8 & 2,168.30 & 2,525.20 \\
-          & Category B & \multicolumn{1}{c}{lb} & \multicolumn{1}{c}{8} & 18,343.30 & 2,460.70 & 15,269.00 & 21,524.10 \\
-          & Category C & \multicolumn{1}{c}{\$} & \multicolumn{1}{c}{8} & 3,699.20 & 2,549.80 & 1,299.10 & 8,709.80 \\
-    \multicolumn{1}{l}{Variable 4} & Category A & \multicolumn{1}{c}{\$} & \multicolumn{1}{c}{8} & 2,288.80 & 186.1 & 2,114.80 & 2,462.90 \\
-          & Category B & \multicolumn{1}{c}{lb} & \multicolumn{1}{c}{8} & 23,450.40 & 4,172.50 & 20,045.00 & 32,363.00 \\
-          & Category C & \multicolumn{1}{c}{\$} & \multicolumn{1}{c}{8} & 6,619.80 & 1,918.40 & 4,479.70 & 10,633.90 \\
-\hline
-          & CASE \#1 &       &       & 14    & 6.61  & 6.9   & 27.9 \\
-          & CASE \#2 &       &       & 22.8  & 7.73  & 10.2  & 31.4 \\
-    \hline
-    \end{tabular}}
-\end{table}%
+\newpsfontdot {diamond} [1.5 0.0 0.0 1.9 -0.4598 -0.70775]{Symbol}{<E0>}
+\newpsfontdot {diamond*}[2 0.0 0.0 2.3 -0.8533 -0.5336 ]{Symbol}{<A8>}
+\newpsfontdotH{Bdiamond}[1.0 0.2 0.5 0.75 -0.1 0.1 ]{PSTricksDotFont}{(D)}{(l)}
+\begin{pspicture}[showgrid=true](0,0.55)(4,3.49)
+\psdots[dotstyle=diamond](1,3)(2,3)(3,3) \psdots[dotstyle=diamond*](1,2)(2,2)(3,2)
+\psdots[dotstyle=Bdiamond](1,1)(2,1)(3,1)
+\end{pspicture} \qquad
+\newpsfontdotH{diamond} [1.9 0.0 0.0 1.0 0.0 0.25]{PSTricksDotFont}{(d)}{(l)}
+\newpsfontdot {diamond*}[0.5 0.0 0.0 1.0 0.0 0.0 ]{PSTricksDotFont}{(l)}
+\newpsfontdotH{Bdiamond}[1.0 0.2 0.5 0.75 0.0 0.0]{PSTricksDotFont}{(D)}{(l)}
+\begin{pspicture}[showgrid=true](0,0.55)(4,3.49)
+\psdots[dotstyle=diamond](1,3)(2,3)(3,3) \psdots[dotstyle=diamond*](1,2)(2,2)(3,2)
+\psdots[dotstyle=Bdiamond](1,1)(2,1)(3,1)
+\end{pspicture}
+\psset{dotscale=5}
+\begin{pspicture}[showgrid=true](0,0.55)(4,3.49)
+\psdots[dotstyle=diamond, linecolor=red](1,3)(2,3)(3,3)
+\psdots[dotstyle=diamond*](1,2)(2,2)(3,2)
+\psdots[dotstyle=Bdiamond](1,1)(2,1)(3,1)
+\end{pspicture}
+% ... rest of your code ...
 
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FIGURES
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Here's a JPG picture to prove we're \emph{not} using the LaTeX+dvipdf engine!
 
-\begin{figure}[H]
-    \centering
-        \includegraphics[scale=.6]{figures/example_figure.png}
-    \caption{Example figure.}
-    \label{fig:1}
-\end{figure}
-
-% ==========================
-% ==========================
-% ==========================
-
+\includegraphics[width=5cm]{stream}
 
 \end{document}
